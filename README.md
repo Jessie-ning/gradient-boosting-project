@@ -14,6 +14,26 @@ Home Credit Default Risk Kaggle dataset. The main evaluation metric is AUC.
 | Random Forest | 0.7208 |
 | Logistic Regression | 0.6322 |
 
+## Key Visualisations
+
+### Model Comparison
+![Model Comparison](outputs/model_comparison.png)
+
+LightGBM with hyperparameter tuning achieved the best AUC of 0.7718, significantly
+outperforming Logistic Regression (0.6322). This confirms that default risk is a
+non-linear problem that tree-based models handle much better than linear models.
+CatBoost performed strongly out of the box at 0.7657 with no tuning.
+
+### SHAP Summary
+![SHAP Summary](outputs/shap_summary.png)
+
+The SHAP plot shows both the importance and direction of each feature's effect.
+EXT_SOURCE_MEAN is the strongest predictor - low external credit scores (blue) push
+predictions towards default, while high scores (red) reduce default probability.
+CREDIT_ANNUITY_RATIO, an engineered feature, is the second most important - a high
+ratio means the applicant is borrowing a lot relative to their repayment amount,
+increasing default risk.
+
 ## Project Structure
 gradient_boosting_project/
 ├── data/             # Raw dataset from Kaggle
