@@ -2,10 +2,11 @@
 
 ## Project Overview
 A supervised machine learning pipeline to predict loan default risk using the
-Home Credit Default Risk Kaggle dataset. The main evaluation metric is AUC.
+Home Credit Default Risk Kaggle dataset. All AUC scores are out-of-sample,
+evaluated on a 20% holdout validation set. The main evaluation metric is AUC.
 
 ## Results
-| Model | AUC |
+| Model | Out-of-Sample AUC |
 |---|---|
 | LightGBM Tuned | 0.7718 |
 | CatBoost | 0.7657 |
@@ -19,24 +20,24 @@ Home Credit Default Risk Kaggle dataset. The main evaluation metric is AUC.
 ### Model Comparison
 ![Model Comparison](outputs/model_comparison.png)
 
-LightGBM with hyperparameter tuning achieved the best AUC of 0.7718, significantly
-outperforming Logistic Regression (0.6322). This confirms that default risk is a
-non-linear problem that tree-based models handle much better than linear models.
+LightGBM with hyperparameter tuning achieved the best out-of-sample AUC of 0.7718,
+significantly outperforming Logistic Regression (0.6322). This confirms that default
+risk is a non-linear problem that tree-based models handle much better than linear models.
 CatBoost performed strongly out of the box at 0.7657 with no tuning.
 
 ### SHAP Summary
 ![SHAP Summary](outputs/shap_summary.png)
 
-The SHAP plot shows both the importance and direction of each feature's effect.
-EXT_SOURCE_MEAN is the strongest predictor - low external credit scores (blue) push
-predictions towards default, while high scores (red) reduce default probability.
-CREDIT_ANNUITY_RATIO, an engineered feature, is the second most important - a high
-ratio means the applicant is borrowing a lot relative to their repayment amount,
-increasing default risk.
+The SHAP plot shows both the importance and direction of each feature's effect on
+out-of-sample predictions. EXT_SOURCE_MEAN is the strongest predictor - low external
+credit scores (blue) push predictions towards default, while high scores (red) reduce
+default probability. CREDIT_ANNUITY_RATIO, an engineered feature, is the second most
+important — a high ratio means the applicant is borrowing a lot relative to their
+repayment amount, increasing default risk.
 
 ## Project Structure
 gradient_boosting_project/
-├── data/             # Raw dataset from Kaggle
+├── data/             # Raw dataset from Kaggle (not tracked in Git)
 ├── notebooks/        # Jupyter notebook with full analysis
 ├── src/              # Python scripts
 ├── outputs/          # Saved charts and results
@@ -44,10 +45,14 @@ gradient_boosting_project/
 └── requirements.txt  # Python dependencies
 
 ## Key Findings
-- EXT_SOURCE features are the strongest predictors of default
-- Feature engineering improved AUC by 0.007
-- LightGBM outperformed all other models
-- Class imbalance (8% default rate) makes AUC more appropriate than accuracy
+- All results evaluated out-of-sample on a 20% holdout validation set
+- EXT_SOURCE features (external credit scores) are the strongest predictors of default
+- Feature engineering improved AUC from 0.7574 to 0.7646
+- Hyperparameter tuning with Optuna further improved AUC to 0.7718
+- LightGBM outperformed all other models including CatBoost, XGBoost, Random Forest,
+  and Logistic Regression
+- Class weights improved default recall from 137 to 3,382 out of 4,965 actual defaulters,
+  highlighting the real-world tradeoff between precision and recall
 
 ## Setup
 ```bash
